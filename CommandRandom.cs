@@ -59,25 +59,30 @@ namespace fr34kyn01535.Kits
             var availableKits = Kits.Instance.Configuration.Instance.Kits.Where(thisKit =>
             {
 
-            KeyValuePair<string, DateTime> globalCooldown = Kits.GlobalCooldown.Where(k => k.Key == caller.ToString()).FirstOrDefault();
-            if (!globalCooldown.Equals(default(KeyValuePair<string, DateTime>)))
-            {
-                double globalCooldownSeconds = (DateTime.Now - globalCooldown.Value).TotalSeconds;
-                if (globalCooldownSeconds < Kits.Instance.Configuration.Instance.GlobalCooldown)
+                bool hasPermissions = caller.HasPermission("kit.*") | caller.HasPermission("kit." + thisKit.Name.ToLower());
+                if (!hasPermissions)
                 {
                     return false;
                 }
-            }
+                KeyValuePair<string, DateTime> globalCooldown = Kits.GlobalCooldown.Where(k => k.Key == caller.ToString()).FirstOrDefault();
+                if (!globalCooldown.Equals(default(KeyValuePair<string, DateTime>)))
+                {
+                    double globalCooldownSeconds = (DateTime.Now - globalCooldown.Value).TotalSeconds;
+                    if (globalCooldownSeconds < Kits.Instance.Configuration.Instance.GlobalCooldown)
+                    {
+                        return false;
+                    }
+                }
 
-            KeyValuePair<string, DateTime> individualCooldown = Kits.InvididualCooldown.Where(k => k.Key == (caller.ToString() + thisKit.Name)).FirstOrDefault();
-            if (!individualCooldown.Equals(default(KeyValuePair<string, DateTime>)))
-            {
-                double individualCooldownSeconds = (DateTime.Now - individualCooldown.Value).TotalSeconds;
-                if (individualCooldownSeconds < thisKit.Cooldown)
+                KeyValuePair<string, DateTime> individualCooldown = Kits.InvididualCooldown.Where(k => k.Key == (caller.ToString() + thisKit.Name)).FirstOrDefault();
+                if (!individualCooldown.Equals(default(KeyValuePair<string, DateTime>)))
                 {
-                    return false;
+                    double individualCooldownSeconds = (DateTime.Now - individualCooldown.Value).TotalSeconds;
+                    if (individualCooldownSeconds < thisKit.Cooldown)
+                    {
+                        return false;
+                    }
                 }
-            }
 
                 var cancelBecauseNotEnoughMoney = false;
                 Kits.ExecuteDependencyCode("Uconomy", (IRocketPlugin plugin) => {
