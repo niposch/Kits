@@ -1,7 +1,9 @@
 ﻿using Rocket.API;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Chat;
+using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
+using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,6 +95,12 @@ namespace fr34kyn01535.Kits
                 }
             }
 
+            // check wether the player already has a kit
+            if (Kits.Instance.PlayersWithKit.ContainsKey(caller.Id) && Kits.Instance.Configuration.Instance.OnlyOneKit)
+            {
+                UnturnedChat.Say(caller, Kits.Instance.Translations.Instance.Translate("command_kit_player_has_already_a_kit"));
+                return;
+            }
             bool cancelBecauseNotEnoughtMoney = false;
 
             if (kit.Money.HasValue && kit.Money.Value != 0)
@@ -119,6 +127,7 @@ namespace fr34kyn01535.Kits
             {
                 throw new WrongUsageOfCommandException(caller, this);
             }
+
 
             foreach (KitItem item in kit.Items)
             {
@@ -173,6 +182,7 @@ namespace fr34kyn01535.Kits
             {
                 Kits.InvididualCooldown.Add(caller.ToString() + kit.Name, DateTime.Now);
             }
+            Kits.Instance.PlayersWithKit.Add(caller.Id, kit);
         }
     }
 }

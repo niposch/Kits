@@ -2,9 +2,13 @@
 using Rocket.API.Collections;
 using Rocket.Core;
 using Rocket.Core.Logging;
+using Rocket.Unturned.Events;
 using Rocket.Core.Plugins;
 using System;
 using System.Collections.Generic;
+using Rocket.Unturned.Player;
+using Rocket.Unturned.Events;
+using SDG.Unturned;
 
 namespace fr34kyn01535.Kits
 { 
@@ -14,6 +18,7 @@ namespace fr34kyn01535.Kits
 
         public static Dictionary<string, DateTime> GlobalCooldown = new Dictionary<string,DateTime>();
         public static Dictionary<string, DateTime> InvididualCooldown = new Dictionary<string, DateTime>();
+        public Dictionary<string, Kit> PlayersWithKit = new Dictionary<string, Kit>();
 
         protected override void Load()
         {
@@ -26,8 +31,20 @@ namespace fr34kyn01535.Kits
             {
                 Logger.Log("Optional dependency Uconomy is not present.");
             }
+            UnturnedPlayerEvents.OnPlayerDeath += OnPlayerDeath;
         }
-
+        protected override void Unload()
+        {
+            UnturnedPlayerEvents.OnPlayerDeath -= OnPlayerDeath;
+            base.Unload();
+        }
+        private void OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, Steamworks.CSteamID murderer)
+        {
+            if (PlayersWithKit.ContainsKey(player.Id))
+            {
+                PlayersWithKit.Remove(player.Id);
+            }
+        }
         public override TranslationList DefaultTranslations
         {
             get
@@ -43,7 +60,8 @@ namespace fr34kyn01535.Kits
                     {"command_kits","You have access to the following kits: {0}" },
                     {"command_kit_no_money","You can't afford the kit {2}. You need atleast {0} {1}." },
                     {"command_kit_money","You have received {0} {1} from the kit {2}." },
-                    {"command_kit_xp","You have received {0} xp from the kit {1}." }
+                    {"command_kit_xp","You have received {0} xp from the kit {1}." },
+                    {"command_kit_player_has_already_a_kit","You already have a kit." }
                 };
             }
         }
