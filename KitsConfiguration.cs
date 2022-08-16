@@ -10,7 +10,8 @@ namespace fr34kyn01535.Kits
         [XmlArrayItem(ElementName = "Kit")]
         public List<Kit> Kits;
         public int GlobalCooldown;
-        public bool OnlyOneKit = false; // wether the player should be able to get multiple kits in a single lifetime
+        public bool OnlyOneKit = false; // whether the player should be able to get multiple kits in a single lifetime
+        public bool AllowNewKitAfterReconnect = false; // plugin will allow a player to take another kit after reconnect
 
         public void LoadDefaults()
         {

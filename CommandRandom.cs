@@ -4,12 +4,14 @@ using Rocket.Unturned.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace fr34kyn01535.Kits
 {
     public class CommandRandom : IRocketCommand
     {
+        private Random random = new Random(DateTime.Now.Millisecond);
         public AllowedCaller AllowedCaller
         {
             get { return Rocket.API.AllowedCaller.Player; }
@@ -46,8 +48,6 @@ namespace fr34kyn01535.Kits
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            var random = new Random();
-
             UnturnedPlayer player = (UnturnedPlayer)caller;
 
             // check wether the player already has a kit

@@ -1,14 +1,16 @@
 ﻿using Rocket.API;
 using Rocket.API.Collections;
 using Rocket.Core;
-using Rocket.Core.Logging;
 using Rocket.Unturned.Events;
 using Rocket.Core.Plugins;
 using System;
 using System.Collections.Generic;
+using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using Rocket.Unturned.Events;
 using SDG.Unturned;
+using UnityEngine;
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace fr34kyn01535.Kits
 { 
@@ -31,14 +33,29 @@ namespace fr34kyn01535.Kits
             {
                 Logger.Log("Optional dependency Uconomy is not present.");
             }
+
             UnturnedPlayerEvents.OnPlayerDeath += OnPlayerDeath;
+            U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
         }
         protected override void Unload()
         {
             UnturnedPlayerEvents.OnPlayerDeath -= OnPlayerDeath;
+            U.Events.OnPlayerDisconnected -= OnPlayerDisconnected;
             base.Unload();
         }
+
+        private void OnPlayerDisconnected(UnturnedPlayer player)
+        {
+            if(this.Configuration.Instance.AllowNewKitAfterReconnect)
+                RemoveFromHasKitsDict(player);
+        }
+
         private void OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, Steamworks.CSteamID murderer)
+        {
+            RemoveFromHasKitsDict(player);
+        }
+        
+        private void RemoveFromHasKitsDict(UnturnedPlayer player)
         {
             if (PlayersWithKit.ContainsKey(player.Id))
             {
