@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System;
+using SDG.Unturned;
 
 namespace fr34kyn01535.Kits
 {
@@ -17,7 +18,7 @@ namespace fr34kyn01535.Kits
         {
             GlobalCooldown = 10;
             Kits = new List<Kit>() {
-                new Kit() { Cooldown = 10, Name = "Survival", XP = 0,Items = new List<KitItem>() { new KitItem(245, 1), new KitItem(81, 2), new KitItem(16, 1) }},
+                new Kit() { Cooldown = 10, Name = "Survival", XP = 0,Items = new List<KitItem>() { new KitItem(245, 1), new KitItem(81, 2), new KitItem(16, 1) }, Skills = new List<SkillItem>{new SkillItem{Level = 2, SkillName = "Overkill", OverrideSkillLevel = true}, new SkillItem{SkillName = "Sharpshooter", Level = 5, OverrideSkillLevel = false}}},
                 new Kit() { Cooldown = 10, Name = "Brute Force", XP = 0,Money = 30, Vehicle = 57,Items = new List<KitItem>() { new KitItem(112, 1), new KitItem(113, 3), new KitItem(254, 3) }},
                 new Kit() { Cooldown = 10, Name = "Watcher", XP = 200,Money=-20, Items = new List<KitItem>() { new KitItem(109, 1), new KitItem(111, 3), new KitItem(236, 1) }}
             };
@@ -35,6 +36,9 @@ namespace fr34kyn01535.Kits
 
         [XmlArrayItem(ElementName = "Item")]
         public List<KitItem> Items;
+        
+        [XmlArrayItem(ElementName = "Skill")]
+        public List<SkillItem> Skills;
 
         public int? Cooldown = null;
     }
@@ -54,5 +58,42 @@ namespace fr34kyn01535.Kits
 
         [XmlAttribute("amount")]
         public byte Amount;
+    }
+
+    public class SkillItem
+    {
+        // see UnturnedSkill.cs for skill Names
+        /* Possible Skill Names:
+        Overkill
+        Sharpshooter
+        Dexerity
+        Cardio
+        Exercise
+        Diving
+        Parkour
+        Sneakybeaky
+        Vitality
+        Immunity
+        Toughness
+        Strength
+        Warmblooded
+        Survival
+        Healing
+        Crafting
+        Outdoors
+        Cooking
+        Fishing
+        Agriculture
+        Mechanic
+        Engineer
+        */
+
+        [XmlAttribute("skillName")]
+        public string SkillName;
+        [XmlAttribute("level")]
+        public byte Level;
+        [XmlAttribute("overrideSkillLevel")]
+        public bool OverrideSkillLevel; // default: adds the skill levels to the level the player currently has
+        // if it is set to true, the skill levels will be overriden
     }
 }

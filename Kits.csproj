@@ -84,6 +84,7 @@
     <Compile Include="CommandKits.cs" />
     <Compile Include="CommandKit.cs" />
     <Compile Include="CommandRandom.cs" />
+    <Compile Include="Helper\SkillEnumHelper.cs" />
     <Compile Include="KitsConfiguration.cs" />
     <Compile Include="Kits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

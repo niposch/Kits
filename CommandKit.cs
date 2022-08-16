@@ -7,6 +7,8 @@ using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using fr34kyn01535.Kits.Helper;
+using Rocket.Unturned.Skills;
 
 namespace fr34kyn01535.Kits
 {
@@ -134,6 +136,7 @@ namespace fr34kyn01535.Kits
 
                 try
                 {
+                    
                     if (!player.GiveItem(item.ItemId, item.Amount))
                     {
                         Logger.Log(Kits.Instance.Translations.Instance.Translate("command_kit_failed_giving_item", player.CharacterName, item.ItemId, item.Amount));
@@ -150,6 +153,24 @@ namespace fr34kyn01535.Kits
             {
                 player.Experience += kit.XP.Value;
                 UnturnedChat.Say(caller, Kits.Instance.Translations.Instance.Translate("command_kit_xp",  kit.XP.Value, kit.Name));
+            }
+            
+            foreach(var skillKitItem in kit.Skills)
+            {
+                var uSkill = SkillEnumHelper.GetSkillEnum(skillKitItem.SkillName);
+                if(uSkill == null)
+                    continue;
+                var skill = player.GetSkill(uSkill);
+                int newLevel =  skillKitItem.Level + skill.level;
+                if (skillKitItem.OverrideSkillLevel)
+                {
+                    newLevel = skillKitItem.Level;
+                }
+                if(newLevel > skill.max)
+                {
+                    newLevel = skill.max;
+                }
+                player.SetSkillLevel(uSkill, (byte) newLevel);
             }
 
             if (kit.Vehicle.HasValue) {
