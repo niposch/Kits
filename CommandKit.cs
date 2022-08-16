@@ -182,7 +182,11 @@ namespace fr34kyn01535.Kits
             {
                 Kits.InvididualCooldown.Add(caller.ToString() + kit.Name, DateTime.Now);
             }
-            Kits.Instance.PlayersWithKit.Add(caller.Id, kit);
+            
+            if(Kits.Instance.Configuration.Instance.OnlyOneKit)
+            {
+                Kits.Instance.PlayersWithKit.Add(caller.Id, kit);
+            }
         }
     }
 }
